@@ -21,9 +21,11 @@ class TestApp(TestCase):
         with self.assertRaises(MockTypeError):
             get_user_url('9')
 
-    # TODO Uncomment. autospect does not work yet
-    # @patch('app.get_user_by_id', autospec=True)
-    # def test_get_user_url_missing_arg(self):
-    #     url = get_user_url()
+    def test_cannot_autospec(self):
+        with self.assertRaises(ValueError):
+            patch('app.get_user_by_id', autospec=True)
 
-    #     self.assertEquals(url, MOCK_URL)
+    @patch('app.get_user_by_id', Mock(return_value={'url': MOCK_URL}))
+    def test_passing_no_arguments_fails(self):
+        with self.assertRaises(TypeError):
+            get_user_url()
